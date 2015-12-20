@@ -12,5 +12,14 @@ var elixir = require('laravel-elixir');
  */
 
 elixir(function(mix) {
+
     mix.sass('app.scss');
+
+    mix.styles(['vendor/normalize.css', 'app.css'], null, 'public/css');
+
+    /* 
+    cache busting: in view use {{ elixir('css/all.css') }}
+    mix.version('public/css/all.css');
+	*/
+
 });
