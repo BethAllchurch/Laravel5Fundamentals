@@ -11,6 +11,7 @@ use App\Article;
 
 use Carbon\Carbon;
 use Auth;
+use Flash;
 
 class ArticlesController extends Controller
 {
@@ -38,8 +39,8 @@ class ArticlesController extends Controller
 
     public function store(Requests\ArticleRequest $input)
     {
-        $article = new Article($input->all());
-        Auth::user()->articles()->save($article); // todo
+        Auth::user()->articles()->create($input->all());
+        flash()->success('Your article has been created!');
         return redirect('articles');
     }
 

@@ -20,6 +20,9 @@ elixir(function(mix) {
     /* 
     cache busting: in view use {{ elixir('css/all.css') }}
     mix.version('public/css/all.css');
+
+    unit testing
+    mix.phpUnit();
 	*/
 
 });
