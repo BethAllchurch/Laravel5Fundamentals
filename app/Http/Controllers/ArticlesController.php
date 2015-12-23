@@ -8,6 +8,7 @@ use App\Http\Requests;
 use App\Http\Controllers\Controller;
 
 use App\Article;
+use App\Tag;
 
 use Carbon\Carbon;
 use Auth;
@@ -33,25 +34,28 @@ class ArticlesController extends Controller
     }
 
     public function create()
-    {
-        return view('articles.create');
+    {   
+        $tags = Tag::lists('name', 'id');
+        return view('articles.create', compact('tags'));
     }
 
-    public function store(Requests\ArticleRequest $input)
+    public function store(Requests\ArticleRequest $request)
     {
-        Auth::user()->articles()->create($input->all());
+        $article = Auth::user()->articles()->create($request->all());
+        $article->tags()->attach($request->input('tag_list'));
         flash()->success('Your article has been created!');
         return redirect('articles');
     }
 
     public function edit(Article $article)
     {
-        return view('articles.edit', compact('article'));
+        $tags = Tag::lists('name', 'id');
+        return view('articles.edit', compact('article', 'tags'));
     }
 
-    public function update(Article $article, Requests\ArticleRequest $input)
+    public function update(Article $article, Requests\ArticleRequest $request)
     {
-        $article->update($input->all());
+        $article->update($request->all());
         return redirect('articles');
     }
 }
