@@ -16,7 +16,6 @@ use Flash;
 
 class ArticlesController extends Controller
 {
-
     public function __construct()
     {
         $this->middleware('auth', ['only' => 'create']); // also 'except'
@@ -41,8 +40,7 @@ class ArticlesController extends Controller
 
     public function store(Requests\ArticleRequest $request)
     {
-        $article = Auth::user()->articles()->create($request->all());
-        $article->tags()->attach($request->input('tag_list'));
+        $this->createArticle($request);
         flash()->success('Your article has been created!');
         return redirect('articles');
     }
@@ -56,6 +54,19 @@ class ArticlesController extends Controller
     public function update(Article $article, Requests\ArticleRequest $request)
     {
         $article->update($request->all());
+        $this->syncTags($article, $request->input('tag_list'));
         return redirect('articles');
+    }
+
+    private function createArticle(Requests\ArticleRequest $request)
+    {
+        $article = Auth::user()->articles()->create($request->all());
+        $this->syncTags($article, $request->input('tag_list'));
+        return $article;
+    }
+
+    private function syncTags(Article $article, array $tags)
+    {
+        $article->tags()->sync($tags);
     }
 }
